@@ -7,9 +7,16 @@ import org.springframework.context.annotation.Configuration;
 public class ToolConfig {
 
     @Value("${github.uri}")
-    public static String GITHUB_URI;
+    private String GITHUB_URI;
 
     @Value("${github.token}")
-    public static String GITHUB_TOKEN;
+    private String GITHUB_TOKEN;
 
+    public String getGitHubUri() {
+        return GITHUB_URI;
+    }
+
+    public String getGitHubToken() {
+        return GITHUB_TOKEN;
+    }
 }
