@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: gist-tool
+
+github:
+  uri: ${GITHUB_URI}
+  token: ${GITHUB_TOKEN}
