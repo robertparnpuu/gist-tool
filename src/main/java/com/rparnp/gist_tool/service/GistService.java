@@ -6,6 +6,8 @@ import com.rparnp.gist_tool.config.ToolConfig;
 import com.rparnp.gist_tool.exceptions.NetworkException;
 import com.rparnp.gist_tool.model.github.Gist;
 import com.rparnp.gist_tool.model.pipedrive.Deal;
+import com.rparnp.gist_tool.model.pipedrive.DealsResponse;
+import com.rparnp.gist_tool.model.pipedrive.StagesResponse;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GistService {
@@ -36,8 +41,15 @@ public class GistService {
 
     public void uploadGists(String username) {
         Integer stageId;
+        Set<String> existingDealsTitles;
+
         try {
-            stageId = pipedriveClient.createStage(username);
+            Optional<StagesResponse.Data> stage = pipedriveClient.getAllStages().stream()
+                    .filter(s -> s.getName().equals(username)).findFirst();
+            stageId = stage.isEmpty() ? pipedriveClient.createStage(username) : stage.get().getId();
+
+            existingDealsTitles = pipedriveClient.getAllDeals().stream().map(DealsResponse.Data::getTitle)
+                    .collect(Collectors.toSet());
         } catch (IOException | InterruptedException e) {
             throw new NetworkException();
         }
@@ -47,10 +59,12 @@ public class GistService {
                 new Deal(gist.getDescription(), "Placeholder", toolConfig.getPipedrivePipelineId(), stageId)).toList();
 
         deals.forEach(deal -> {
-            try {
-                pipedriveClient.createDeal(deal);
-            } catch (IOException | InterruptedException e) {
-                throw new NetworkException();
+            if (!existingDealsTitles.contains(deal.getTitle())) {
+                try {
+                    pipedriveClient.createDeal(deal);
+                } catch (IOException | InterruptedException e) {
+                    throw new NetworkException();
+                }
             }
         });
     }
