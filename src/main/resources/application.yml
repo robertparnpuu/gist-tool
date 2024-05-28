@@ -5,3 +5,9 @@ spring:
 github:
   uri: ${GITHUB_URI}
   token: ${GITHUB_TOKEN}
+
+pipedrive:
+  uri: ${PIPEDRIVE_URI}
+  token: ${PIPEDRIVE_TOKEN}
+  pipeline:
+    id: ${PIPEDRIVE_PIPELINE_ID}

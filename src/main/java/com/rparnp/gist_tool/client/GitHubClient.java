@@ -3,7 +3,7 @@ package com.rparnp.gist_tool.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rparnp.gist_tool.config.ToolConfig;
-import com.rparnp.gist_tool.model.Gist;
+import com.rparnp.gist_tool.model.github.Gist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
