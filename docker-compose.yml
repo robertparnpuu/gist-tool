@@ -10,3 +10,5 @@ services:
     environment:
       - GITHUB_URI=https://api.github.com/
       - GITHUB_TOKEN={ENTER GITHUB TOKEN}
+      - PIPEDRIVE_URI={ENTER COMPANY PIPEDRIVE URI}
+      - PIPEDRIVE TOKEN={ENTER PIPEDRIVE TOKEN}
