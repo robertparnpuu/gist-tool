@@ -17,6 +17,11 @@ public class GistController {
     @Resource
     private GistService gistService;
 
+    @GetMapping("/")
+    public ResponseEntity<List<String>> getScannedUsers() {
+        return ResponseEntity.status(HttpStatus.OK).body(gistService.getScannedUsers());
+    }
+
     @GetMapping("/{username}")
     public ResponseEntity<List<Gist>> getGist(@PathVariable String username) {
         return ResponseEntity.status(HttpStatus.OK).body(gistService.getGists(username));
@@ -30,7 +35,6 @@ public class GistController {
 
     @ExceptionHandler({NetworkException.class})
     public ResponseEntity<String> handleNetworkException(RuntimeException ex) {
-        System.out.println();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ex.getMessage());

@@ -20,6 +20,7 @@ public class PipedriveClient {
     private final String CONTENT_TYPE = "Content-type";
     private final String APPLICATION_JSON = "application/json";
     private final String APIKEY_PARAM = "api_token";
+    private final String PIPELINE_ID_PARAM = "pipeline_id";
     private final String GET_STAGES_PATH = "/v2/stages";
     private final String CREATE_STAGE_PATH = "/v2/stages";
     private final String GET_DEALS_PATH = "/v1/deals";
@@ -30,7 +31,9 @@ public class PipedriveClient {
 
     public List<StagesResponse.Data> getAllStages() throws IOException, InterruptedException {
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + GET_STAGES_PATH)
-                .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken()).build().toUri();
+                .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken())
+                .queryParam(PIPELINE_ID_PARAM, toolConfig.getPipedrivePipelineId())
+                .build().toUri();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)

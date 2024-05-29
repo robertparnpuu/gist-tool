@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +30,17 @@ public class GistService {
     @Autowired
     private ToolConfig toolConfig;
 
+    public List<String> getScannedUsers() {
+        List<String> scannedUsers = new ArrayList<>();
+        try {
+            List<StagesResponse.Data> stages = pipedriveClient.getAllStages();
+            stages.forEach(s -> scannedUsers.add(s.getName()));
+        } catch (IOException | InterruptedException e) {
+            throw new NetworkException();
+        }
+        return scannedUsers;
+    }
+
     public List<Gist> getGists(String username) {
         List<Gist> response;
         try {
@@ -43,6 +55,7 @@ public class GistService {
         Integer stageId;
         Set<String> existingDealsTitles;
 
+        // Create Stage for user if it does not exist
         try {
             Optional<StagesResponse.Data> stage = pipedriveClient.getAllStages().stream()
                     .filter(s -> s.getName().equals(username)).findFirst();
@@ -58,6 +71,7 @@ public class GistService {
         List<Deal> deals = gists.stream().map(gist ->
                 new Deal(gist.getDescription(), "Placeholder", toolConfig.getPipedrivePipelineId(), stageId)).toList();
 
+        // Create deals if they don't exist
         deals.forEach(deal -> {
             if (!existingDealsTitles.contains(deal.getTitle())) {
                 try {
