@@ -24,6 +24,8 @@ dependencies {
 	// Annotations
 	compileOnly 'org.projectlombok:lombok:1.18.32'
 	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.3.0'
 }
 
 tasks.named('test') {

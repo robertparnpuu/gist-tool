@@ -11,3 +11,7 @@ pipedrive:
   token: ${PIPEDRIVE_TOKEN}
   pipeline:
     id: ${PIPEDRIVE_PIPELINE_ID}
+
+gist:
+  tool:
+    apikey: ${GIST_TOOL_APIKEY}
