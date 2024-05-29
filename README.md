@@ -1,4 +1,4 @@
-# Core Bank Application
+# gist-tool
 
 ## Prerequisites
 
