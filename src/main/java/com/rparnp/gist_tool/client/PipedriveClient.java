@@ -35,6 +35,8 @@ public class PipedriveClient {
 
     public List<StagesResponse.Data> getAllStages() throws IOException, InterruptedException {
         logger.info("Getting all stages from pipeline");
+        ObjectMapper objectMapper = new ObjectMapper();
+
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + GET_STAGES_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken())
                 .queryParam(PIPELINE_ID_PARAM, toolConfig.getPipedrivePipelineId())
@@ -48,12 +50,13 @@ public class PipedriveClient {
         HttpResponse<String> response = HttpClient.newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(response.body(), StagesResponse.class).getData();
     }
 
     public List<DealsResponse.Data> getAllDeals() throws IOException, InterruptedException {
         logger.info("Getting all deals from pipeline");
+        ObjectMapper objectMapper = new ObjectMapper();
+
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + GET_DEALS_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken()).build().toUri();
 
@@ -65,13 +68,13 @@ public class PipedriveClient {
         HttpResponse<String> response = HttpClient.newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(response.body(), DealsResponse.class).getData();
     }
 
     public Integer createStage(String name) throws IOException, InterruptedException {
         logger.info("Creating stage: " + name);
         ObjectMapper objectMapper = new ObjectMapper();
+
         Stage stage = new Stage(name, toolConfig.getPipedrivePipelineId());
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + CREATE_STAGE_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken()).build().toUri();
@@ -81,6 +84,7 @@ public class PipedriveClient {
                 .header(CONTENT_TYPE, APPLICATION_JSON)
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(stage)))
                 .build();
+
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         StageResponse responseBody = objectMapper.readValue(response.body(), StageResponse.class);
         return responseBody.getData().getId();
@@ -89,6 +93,7 @@ public class PipedriveClient {
     public void createDeal(Deal deal) throws IOException, InterruptedException {
         logger.info("Creating deal: " + deal.getTitle());
         ObjectMapper mapper = new ObjectMapper();
+
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + CREATE_DEAL_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken()).build().toUri();
 
