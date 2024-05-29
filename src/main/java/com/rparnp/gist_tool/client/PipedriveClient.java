@@ -3,6 +3,8 @@ package com.rparnp.gist_tool.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rparnp.gist_tool.config.ToolConfig;
 import com.rparnp.gist_tool.model.pipedrive.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,6 +19,8 @@ import java.util.List;
 @Component
 public class PipedriveClient {
 
+    Logger logger = LoggerFactory.getLogger(PipedriveClient.class);
+
     private final String CONTENT_TYPE = "Content-type";
     private final String APPLICATION_JSON = "application/json";
     private final String APIKEY_PARAM = "api_token";
@@ -30,6 +34,7 @@ public class PipedriveClient {
     public ToolConfig toolConfig;
 
     public List<StagesResponse.Data> getAllStages() throws IOException, InterruptedException {
+        logger.info("Getting all stages from pipeline");
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + GET_STAGES_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken())
                 .queryParam(PIPELINE_ID_PARAM, toolConfig.getPipedrivePipelineId())
@@ -48,6 +53,7 @@ public class PipedriveClient {
     }
 
     public List<DealsResponse.Data> getAllDeals() throws IOException, InterruptedException {
+        logger.info("Getting all deals from pipeline");
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + GET_DEALS_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken()).build().toUri();
 
@@ -64,6 +70,7 @@ public class PipedriveClient {
     }
 
     public Integer createStage(String name) throws IOException, InterruptedException {
+        logger.info("Creating stage: " + name);
         ObjectMapper objectMapper = new ObjectMapper();
         Stage stage = new Stage(name, toolConfig.getPipedrivePipelineId());
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + CREATE_STAGE_PATH)
@@ -80,6 +87,7 @@ public class PipedriveClient {
     }
 
     public void createDeal(Deal deal) throws IOException, InterruptedException {
+        logger.info("Creating deal: " + deal.getTitle());
         ObjectMapper mapper = new ObjectMapper();
         URI uri = UriComponentsBuilder.fromUriString(toolConfig.getPipedriveUri() + CREATE_DEAL_PATH)
                 .queryParam(APIKEY_PARAM, toolConfig.getPipedriveToken()).build().toUri();

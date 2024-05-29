@@ -2,6 +2,11 @@ spring:
   application:
     name: gist-tool
 
+logging:
+  file:
+    path: logs/
+    name: logs/gist-tool.log
+
 github:
   uri: ${GITHUB_URI}
   token: ${GITHUB_TOKEN}

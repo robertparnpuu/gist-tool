@@ -8,7 +8,10 @@ import com.rparnp.gist_tool.model.github.Gist;
 import com.rparnp.gist_tool.model.pipedrive.Deal;
 import com.rparnp.gist_tool.model.pipedrive.DealsResponse;
 import com.rparnp.gist_tool.model.pipedrive.StagesResponse;
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class GistService {
 
+    Logger logger = LoggerFactory.getLogger(GistService.class);
+
     @Resource
     private GitHubClient gitHubClient;
     @Resource
@@ -36,6 +41,7 @@ public class GistService {
             List<StagesResponse.Data> stages = pipedriveClient.getAllStages();
             stages.forEach(s -> scannedUsers.add(s.getName()));
         } catch (IOException | InterruptedException e) {
+            logger.error(e.getMessage(), e);
             throw new NetworkException();
         }
         return scannedUsers;
@@ -46,6 +52,7 @@ public class GistService {
         try {
             response = gitHubClient.getGists(username);
         } catch (IOException | URISyntaxException | InterruptedException e) {
+            logger.error(e.getMessage(), e);
             throw new NetworkException();
         }
         return response;
@@ -53,7 +60,7 @@ public class GistService {
 
     public void uploadGists(String username) {
         Integer stageId;
-        Set<String> existingDealsTitles;
+        Set<String> existingDealsIds;
 
         // Create Stage for user if it does not exist
         try {
@@ -61,22 +68,29 @@ public class GistService {
                     .filter(s -> s.getName().equals(username)).findFirst();
             stageId = stage.isEmpty() ? pipedriveClient.createStage(username) : stage.get().getId();
 
-            existingDealsTitles = pipedriveClient.getAllDeals().stream().map(DealsResponse.Data::getTitle)
+            existingDealsIds = pipedriveClient.getAllDeals().stream().map(DealsResponse.Data::getOriginId)
                     .collect(Collectors.toSet());
         } catch (IOException | InterruptedException e) {
+            logger.error(e.getMessage(), e);
             throw new NetworkException();
         }
 
         List<Gist> gists = getGists(username);
-        List<Deal> deals = gists.stream().map(gist ->
-                new Deal(gist.getDescription(), "Placeholder", toolConfig.getPipedrivePipelineId(), stageId)).toList();
+        List<Deal> deals = gists.stream()
+                .map(gist -> new Deal(
+                        StringUtils.isNotEmpty(gist.getDescription()) ? gist.getDescription() : "No name",
+                        toolConfig.getPipedrivePipelineId(),
+                        stageId,
+                        gist.getId())
+                ).toList();
 
         // Create deals if they don't exist
         deals.forEach(deal -> {
-            if (!existingDealsTitles.contains(deal.getTitle())) {
+            if (!existingDealsIds.contains(deal.getOriginId())) {
                 try {
                     pipedriveClient.createDeal(deal);
                 } catch (IOException | InterruptedException e) {
+                    logger.error(e.getMessage(), e);
                     throw new NetworkException();
                 }
             }

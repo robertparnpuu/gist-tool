@@ -27,5 +27,7 @@ public class DealsResponse {
         private String addTime;
         @JsonProperty("update_time")
         private String updateTime;
+        @JsonProperty("origin_id")
+        private String originId;
     }
 }

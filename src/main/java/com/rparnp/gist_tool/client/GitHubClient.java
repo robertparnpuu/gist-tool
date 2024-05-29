@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rparnp.gist_tool.config.ToolConfig;
 import com.rparnp.gist_tool.model.github.Gist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,8 @@ import java.util.List;
 @Component
 public class GitHubClient {
 
+    Logger logger = LoggerFactory.getLogger(GitHubClient.class);
+
     private final String AUTHORIZATION = "Authorization";
     private final String BEARER = "Bearer ";
     private final String USER_GISTS_PATH = "users/{0}/gists";
@@ -28,6 +32,7 @@ public class GitHubClient {
     public ToolConfig toolConfig;
 
     public List<Gist> getGists(String username) throws IOException, InterruptedException, URISyntaxException {
+        logger.info("Getting gists for user: " + username);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(toolConfig.getGitHubUri() + MessageFormat.format(USER_GISTS_PATH, (Object[]) new String[]{username})))
                 .header(AUTHORIZATION, BEARER + toolConfig.getGitHubToken())
