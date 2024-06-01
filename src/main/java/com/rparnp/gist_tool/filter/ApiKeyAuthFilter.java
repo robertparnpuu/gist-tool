@@ -1,4 +1,4 @@
-package com.rparnp.gist_tool.security;
+package com.rparnp.gist_tool.filter;
 
 import com.rparnp.gist_tool.config.ToolConfig;
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,6 @@
 package com.rparnp.gist_tool.config;
 
-import com.rparnp.gist_tool.security.ApiKeyAuthFilter;
+import com.rparnp.gist_tool.filter.ApiKeyAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
