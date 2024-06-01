@@ -46,4 +46,16 @@ public class GitHubClient {
         objectMapper.registerModule(new JavaTimeModule());
         return Arrays.asList(objectMapper.readValue(response.body(), Gist[].class));
     }
+
+    public byte[] getFile(String uri) throws IOException, InterruptedException, URISyntaxException {
+        logger.info("Fetching file from: " + uri);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(uri))
+                .GET()
+                .build();
+        HttpResponse<byte[]> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        return response.body();
+    }
 }

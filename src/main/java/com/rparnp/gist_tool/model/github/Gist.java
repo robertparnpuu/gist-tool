@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Gist {
@@ -42,4 +44,6 @@ public class Gist {
     private User owner;
     @JsonProperty
     private boolean truncated;
+    @JsonProperty
+    private Map<String, File> files;
 }

@@ -4,9 +4,11 @@ import com.rparnp.gist_tool.client.GitHubClient;
 import com.rparnp.gist_tool.client.PipedriveClient;
 import com.rparnp.gist_tool.config.ToolConfig;
 import com.rparnp.gist_tool.exceptions.NetworkException;
+import com.rparnp.gist_tool.model.github.File;
 import com.rparnp.gist_tool.model.github.Gist;
 import com.rparnp.gist_tool.model.pipedrive.Deal;
-import com.rparnp.gist_tool.model.pipedrive.DealsResponse;
+import com.rparnp.gist_tool.model.pipedrive.DealData;
+import com.rparnp.gist_tool.model.pipedrive.DealResponse;
 import com.rparnp.gist_tool.model.pipedrive.StagesResponse;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
@@ -68,7 +70,7 @@ public class GistService {
                     .filter(s -> s.getName().equals(username)).findFirst();
             stageId = stage.isEmpty() ? pipedriveClient.createStage(username) : stage.get().getId();
 
-            existingDealsIds = pipedriveClient.getAllDeals().stream().map(DealsResponse.Data::getOriginId)
+            existingDealsIds = pipedriveClient.getAllDeals().stream().map(DealData::getOriginId)
                     .collect(Collectors.toSet());
         } catch (IOException | InterruptedException e) {
             logger.error(e.getMessage(), e);
@@ -81,15 +83,19 @@ public class GistService {
                         StringUtils.isNotEmpty(gist.getDescription()) ? gist.getDescription() : "No name",
                         toolConfig.getPipedrivePipelineId(),
                         stageId,
-                        gist.getId())
+                        gist.getId(),
+                        gist.getFiles())
                 ).toList();
 
         // Create deals if they don't exist
         deals.forEach(deal -> {
             if (!existingDealsIds.contains(deal.getOriginId())) {
                 try {
-                    pipedriveClient.createDeal(deal);
-                } catch (IOException | InterruptedException e) {
+                    DealResponse dealResponse = pipedriveClient.createDeal(deal);
+                    for (File file : deal.getFiles().values()) {
+                        pipedriveClient.createFile(dealResponse.getData().getId(), file);
+                    }
+                } catch (IOException | InterruptedException | URISyntaxException e) {
                     logger.error(e.getMessage(), e);
                     throw new NetworkException();
                 }
