@@ -20,3 +20,7 @@ pipedrive:
 gist:
   tool:
     apikey: ${GIST_TOOL_APIKEY}
+
+google:
+  cloud:
+    projectId: ${GOOGLE_CLOUD_PROJECT_ID}

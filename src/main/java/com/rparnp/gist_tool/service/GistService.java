@@ -3,7 +3,9 @@ package com.rparnp.gist_tool.service;
 import com.rparnp.gist_tool.client.GitHubClient;
 import com.rparnp.gist_tool.client.PipedriveClient;
 import com.rparnp.gist_tool.config.ToolConfig;
+import com.rparnp.gist_tool.exceptions.DatabaseConnectionException;
 import com.rparnp.gist_tool.exceptions.NetworkException;
+import com.rparnp.gist_tool.model.firestore.GistEntry;
 import com.rparnp.gist_tool.model.github.File;
 import com.rparnp.gist_tool.model.github.Gist;
 import com.rparnp.gist_tool.model.pipedrive.Deal;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +39,8 @@ public class GistService {
     private PipedriveClient pipedriveClient;
     @Autowired
     private ToolConfig toolConfig;
+    @Autowired
+    private FirestoreService firestoreService;
 
     public List<String> getScannedUsers() {
         List<String> scannedUsers = new ArrayList<>();
@@ -58,6 +63,17 @@ public class GistService {
             throw new NetworkException();
         }
         return response;
+    }
+
+    public List<GistEntry> getRecentlyAddedGists() {
+        try {
+            List<GistEntry> recentGists = firestoreService.getGists();
+            firestoreService.removeRecentGists();
+            return recentGists;
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error(e.getMessage(), e);
+            throw new NetworkException();
+        }
     }
 
     public void uploadGists(String username) {
@@ -95,9 +111,14 @@ public class GistService {
                     for (File file : deal.getFiles().values()) {
                         pipedriveClient.createFile(dealResponse.getData().getId(), file);
                     }
+                    firestoreService.addGist(new GistEntry(deal.getOriginId(), deal.getTitle(), username));
+
                 } catch (IOException | InterruptedException | URISyntaxException e) {
                     logger.error(e.getMessage(), e);
                     throw new NetworkException();
+                } catch (ExecutionException e) {
+                    logger.error(e.getMessage(), e);
+                    throw new DatabaseConnectionException();
                 }
             }
         });

@@ -27,7 +27,7 @@ dependencies {
 	// Security
 	implementation "org.springframework.boot:spring-boot-starter-security:$springBootStarterVersion"
 	// Storage
-	implementation "com.google.cloud:google-cloud-storage:$gcsVersion"
+	implementation "com.google.cloud:google-cloud-firestore:$gcfVersion"
 }
 
 tasks.named('test') {

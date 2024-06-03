@@ -1,7 +1,7 @@
 package com.rparnp.gist_tool.controller;
 
 import com.rparnp.gist_tool.exceptions.NetworkException;
-import com.rparnp.gist_tool.model.github.Gist;
+import com.rparnp.gist_tool.model.firestore.GistEntry;
 import com.rparnp.gist_tool.service.GistService;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,11 @@ public class GistController {
     @GetMapping("/")
     public ResponseEntity<List<String>> getScannedUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(gistService.getScannedUsers());
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<List<GistEntry>> getRecentlyAdded() {
+        return ResponseEntity.status(HttpStatus.OK).body(gistService.getRecentlyAddedGists());
     }
 
     @PutMapping("/scan")
