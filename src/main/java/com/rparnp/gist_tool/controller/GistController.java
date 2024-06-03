@@ -22,9 +22,10 @@ public class GistController {
         return ResponseEntity.status(HttpStatus.OK).body(gistService.getScannedUsers());
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<List<Gist>> getGist(@PathVariable String username) {
-        return ResponseEntity.status(HttpStatus.OK).body(gistService.getGists(username));
+    @PutMapping("/scan")
+    public ResponseEntity<String> putScanUsers() {
+        gistService.scanGists();
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
     }
 
     @PostMapping("/upload/{username}")

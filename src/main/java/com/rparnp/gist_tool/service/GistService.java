@@ -101,5 +101,11 @@ public class GistService {
                 }
             }
         });
+
+    }
+
+    public void scanGists() {
+        logger.info("Scanning all gists");
+        getScannedUsers().forEach(this::uploadGists);
     }
 }
