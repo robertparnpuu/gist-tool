@@ -4,6 +4,8 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.rparnp.gist_tool.model.firestore.GistEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class FirestoreService {
 
+    Logger logger = LoggerFactory.getLogger(FirestoreService.class);
+
     private final String COLLECTION_NAME = "gists";
     private final String DOCUMENT_NAME = "recently-scanned";
     private final String PROPERTY_NAME = "gists";
@@ -24,6 +28,7 @@ public class FirestoreService {
     private Firestore firestore;
 
     public List<GistEntry> getGists() throws ExecutionException, InterruptedException {
+        logger.info("Fetching recent gists");
         DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(DOCUMENT_NAME);
         DocumentSnapshot snapshot = docRef.get().get();
 
@@ -32,6 +37,7 @@ public class FirestoreService {
     }
 
     public void addGist(GistEntry entry) throws ExecutionException, InterruptedException {
+        logger.info("Storing to recent gists: " + entry.getId());
         DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(DOCUMENT_NAME);
         Map<String, List<GistEntry>> data = new HashMap<>();
         List<GistEntry> gists = getGists();
@@ -42,6 +48,7 @@ public class FirestoreService {
     }
 
     public void resetRecentGists() {
+        logger.info("Resetting recent gists");
         DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(DOCUMENT_NAME);
         Map<String, List<GistEntry>> data = new HashMap<>();
 
