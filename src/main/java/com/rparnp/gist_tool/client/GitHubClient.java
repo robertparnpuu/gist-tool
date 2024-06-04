@@ -26,7 +26,7 @@ public class GitHubClient {
 
     private final String AUTHORIZATION = "Authorization";
     private final String BEARER = "Bearer ";
-    private final String USER_GISTS_PATH = "users/{0}/gists";
+    private final String USER_GISTS_PATH = "/users/{0}/gists";
 
     @Autowired
     public ToolConfig toolConfig;
