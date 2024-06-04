@@ -15,7 +15,6 @@ public class PeriodicallyScanGistsJob {
 
     @Scheduled(cron = "0 0 */3 * * *")
     public void run() {
-        gistService.getScannedUsers()
-                .forEach(user -> gistService.uploadGists(user));
+        gistService.scanGists();
     }
 }
