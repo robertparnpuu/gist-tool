@@ -34,7 +34,8 @@ public class GitHubClient {
     public List<Gist> getGists(String username) throws IOException, InterruptedException, URISyntaxException {
         logger.info("Getting gists for user: " + username);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(toolConfig.getGitHubUri() + MessageFormat.format(USER_GISTS_PATH, (Object[]) new String[]{username})))
+                .uri(new URI(toolConfig.getGitHubUri() +
+                        MessageFormat.format(USER_GISTS_PATH, (Object[]) new String[]{username})))
                 .header(AUTHORIZATION, BEARER + toolConfig.getGitHubToken())
                 .GET()
                 .build();

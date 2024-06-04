@@ -41,7 +41,7 @@ public class FirestoreService {
         docRef.set(data);
     }
 
-    public void removeRecentGists() {
+    public void resetRecentGists() {
         DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(DOCUMENT_NAME);
         Map<String, List<GistEntry>> data = new HashMap<>();
 

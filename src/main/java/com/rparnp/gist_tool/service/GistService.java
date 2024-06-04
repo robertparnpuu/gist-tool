@@ -55,20 +55,18 @@ public class GistService {
     }
 
     public List<Gist> getGists(String username) {
-        List<Gist> response;
         try {
-            response = gitHubClient.getGists(username);
+            return gitHubClient.getGists(username);
         } catch (IOException | URISyntaxException | InterruptedException e) {
             logger.error(e.getMessage(), e);
             throw new NetworkException();
         }
-        return response;
     }
 
     public List<GistEntry> getRecentlyAddedGists() {
         try {
             List<GistEntry> recentGists = firestoreService.getGists();
-            firestoreService.removeRecentGists();
+            firestoreService.resetRecentGists();
             return recentGists;
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage(), e);

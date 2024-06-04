@@ -7,6 +7,8 @@ Ensure you have the following installed:
 * Docker
 * gcloud CLI tool
 
+Additionally, a *Pipeline* on Pipedrive must be set up.
+
 ## Building the application
 
 To build the file, navigate to the root folder and run
