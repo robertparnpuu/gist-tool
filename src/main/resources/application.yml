@@ -1,6 +1,8 @@
 spring:
   application:
     name: gist-tool
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
 
 logging:
   file:
@@ -24,3 +26,7 @@ gist:
 google:
   cloud:
     projectId: ${GOOGLE_CLOUD_PROJECT_ID}
+
+local:
+  firestore:
+    host: ${LOCAL_FIRESTORE_HOST}

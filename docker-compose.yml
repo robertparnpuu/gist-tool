@@ -8,13 +8,20 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - SPRING_PROFILES_ACTIVE=dev # For Firestore emulator usage when developing locally
       - GITHUB_URI=https://api.github.com/
       - GITHUB_TOKEN={ENTER GITHUB TOKEN}
       - PIPEDRIVE_URI={ENTER COMPANY PIPEDRIVE URI}
       - PIPEDRIVE_TOKEN={ENTER PIPEDRIVE API TOKEN}
       - PIPEDRIVE_PIPELINE_ID={ENTER PIPEDRIVE PIPELINE ID}
-      - GIST_TOOL_APIKEY={ENTER A RANDOM VALUE TO USE AS AN APIKEY}
-      - GOOGLE_CLOUD_PROJECT_ID={ENTER GOOGLE CLOUD PROJECT ID}
-      - GOOGLE_APPLICATION_CREDENTIALS=/root/.config/gcloud/{ENTER PRIVATE KEY FILENAME}
-    volumes:
-      - ~/.config/gcloud:/root/.config/gcloud
+      - GIST_TOOL_APIKEY={ENTER A RANDOM VALUE TO USE AS AN APIKEY} # Any random String to authenticate requests
+      - GOOGLE_CLOUD_PROJECT_ID={ENTER ANY PROJECT ID}
+      - LOCAL_FIRESTORE_HOST=firestore:8200
+
+  firestore:
+    image: mtlynch/firestore-emulator
+    environment:
+      - FIRESTORE_PROJECT_ID={ENTER ANY PROJECT ID}
+      - PORT=8200
+    ports:
+      - "8200:8200"
