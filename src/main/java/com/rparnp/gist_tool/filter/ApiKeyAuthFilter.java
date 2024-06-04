@@ -1,6 +1,7 @@
 package com.rparnp.gist_tool.filter;
 
 import com.rparnp.gist_tool.config.ToolConfig;
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,10 +33,10 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String requestApiKey = request.getHeader(API_KEY_HEADER);
 
-        if (requestApiKey != null && requestApiKey.equals(API_KEY)) {
+        if (StringUtils.isNotEmpty(requestApiKey) && requestApiKey.equals(API_KEY)) {
             filterChain.doFilter(request, response);
         } else {
-            String logMessage = requestApiKey == null ? "Failed api key authentication with no header" :
+            String logMessage = StringUtils.isEmpty(requestApiKey) ? "Failed api key authentication with no header" :
                     "Failed api key authentication with api key: " + requestApiKey;
             logger.info(logMessage);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

@@ -94,7 +94,7 @@ public class GistService {
         List<Gist> gists = getGists(username);
         List<Deal> deals = gists.stream()
                 .map(gist -> new Deal(
-                        StringUtils.isNotEmpty(gist.getDescription()) ? gist.getDescription() : "No name",
+                        StringUtils.isNotEmpty(gist.getDescription()) ? gist.getDescription() : "No name: " + gist.getId(),
                         toolConfig.getPipedrivePipelineId(),
                         stageId,
                         gist.getId(),
