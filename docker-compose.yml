@@ -15,13 +15,13 @@ services:
       - PIPEDRIVE_TOKEN={ENTER PIPEDRIVE API TOKEN}
       - PIPEDRIVE_PIPELINE_ID={ENTER PIPEDRIVE PIPELINE ID}
       - GIST_TOOL_APIKEY={ENTER A RANDOM VALUE TO USE AS AN APIKEY} # Any random String to authenticate requests
-      - GOOGLE_CLOUD_PROJECT_ID={ENTER ANY PROJECT ID}
+      - GOOGLE_CLOUD_PROJECT_ID={ENTER ANY PROJECT ID} #Must match FIRE_STORE_PROJECT_ID
       - LOCAL_FIRESTORE_HOST=firestore:8200
 
   firestore:
     image: mtlynch/firestore-emulator
     environment:
-      - FIRESTORE_PROJECT_ID={ENTER ANY PROJECT ID}
+      - FIRESTORE_PROJECT_ID={ENTER ANY PROJECT ID} #Must match GOOGLE_CLOUD_PROJECT_ID
       - PORT=8200
     ports:
       - "8200:8200"
