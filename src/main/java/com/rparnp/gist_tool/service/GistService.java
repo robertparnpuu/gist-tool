@@ -70,7 +70,7 @@ public class GistService {
             return recentGists;
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage(), e);
-            throw new NetworkException();
+            throw new DatabaseConnectionException();
         }
     }
 
